@@ -15,7 +15,7 @@ jobs:
       packages: write
       id-token: write # needed for signing the images with GitHub OIDC Token **not production ready**
 
-    name: "Build & Push docs"
+    name: "Rebuild OCI"
     runs-on: ubuntu-latest
 
     steps:
