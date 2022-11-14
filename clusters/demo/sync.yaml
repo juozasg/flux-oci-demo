@@ -5,13 +5,13 @@ metadata:
   name: flux-oci-demo
   namespace: flux-system
 spec:
+  url: oci://ghcr.io/juozasg/flux-oci-demo
   interval: 30s
   provider: generic
   ref:
     tag: latest
   secretRef:
     name: ghcr-auth
-  url: oci://ghcr.io/juozasg/flux-oci-demo
 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
