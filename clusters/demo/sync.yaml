@@ -26,4 +26,4 @@ spec:
   sourceRef:
     kind: OCIRepository
     name: flux-oci-demo
-  targetNamespace: default
+  targetNamespace: flux-system
