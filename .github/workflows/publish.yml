@@ -37,7 +37,7 @@ jobs:
 
     # Make build published as Flux OCI artifact
     - name: Flux push
-      id: push_html
+      id: push_oci
       run: |
         flux push artifact oci://${{ env.PUSH_TARGET }}:${{ steps.docker_meta.outputs.version }} --path=$BUILDDIR \
           --source="$(git config --get remote.origin.url)" \
@@ -64,4 +64,6 @@ jobs:
     - name: Sign the published Docker image
       env:
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-      run: cosign sign --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
+      # run: cosign sign --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
+      run: cosign sign --key cosign.key ${{ steps.push_oci.outputs.digest }}
+
