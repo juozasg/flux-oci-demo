@@ -15,7 +15,7 @@ jobs:
       id-token: write # needed for signing the images with GitHub OIDC Token **not production ready**
       contents: read
 
-    name: "Build and Publish OCI Artifact"
+    name: "Build and Publish"
     runs-on: ubuntu-latest
 
     steps:
