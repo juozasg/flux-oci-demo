@@ -7,7 +7,7 @@ metadata:
 spec:
   interval: 30s
   ref:
-    tag: 6.2.3
+    tag: 6.2.2
   url: https://github.com/stefanprodan/podinfo
 
 ---
