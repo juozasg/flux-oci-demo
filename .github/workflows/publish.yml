@@ -2,7 +2,7 @@ name: Flux OCI Artifact
 
 env:
   OCI_TARGET: ghcr.io/juozasg/manifests/flux-oci-demo # assumed to be on GHCR, ambient credentials are used
-  PATH: ./clusters/demo
+  MANIFESTS_PATH: ./clusters/demo
 
 
 on:
@@ -41,7 +41,7 @@ jobs:
     - name: Flux push
       id: push_oci
       run: |
-        flux push artifact oci://${{ env.OCI_TARGET }}:${{ steps.docker_meta.outputs.version }} --path=${{ env.PATH }} \
+        flux push artifact oci://${{ env.OCI_TARGET }}:${{ steps.docker_meta.outputs.version }} --path=${{ env.MANIFESTS_PATH }} \
 
           --source="$(git config --get remote.origin.url)" \
           --revision="$(git tag --points-at HEAD)/$(git rev-parse HEAD)" 2>&1 | tee tmp-digest.out
