@@ -42,7 +42,6 @@ jobs:
       id: push_oci
       run: |
         flux push artifact oci://${{ env.OCI_TARGET }}:${{ steps.docker_meta.outputs.version }} --path=${{ env.MANIFESTS_PATH }} \
-
           --source="$(git config --get remote.origin.url)" \
           --revision="$(git tag --points-at HEAD)/$(git rev-parse HEAD)" 2>&1 | tee tmp-digest.out
           # Warning: This is not stable, flux CLI output may change
