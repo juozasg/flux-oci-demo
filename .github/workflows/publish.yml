@@ -1,7 +1,9 @@
 name: Flux OCI Artifact
 
 env:
-  PUSH_TARGET: ghcr.io/juozasg/flux-oci-demo # assumed to be on GHCR, ambient credentials are used
+  OCI_TARGET: ghcr.io/juozasg/manifests/flux-oci-demo # assumed to be on GHCR, ambient credentials are used
+  PATH: ./clusters/demo
+
 
 on:
   push:
@@ -39,7 +41,8 @@ jobs:
     - name: Flux push
       id: push_oci
       run: |
-        flux push artifact oci://${{ env.PUSH_TARGET }}:${{ steps.docker_meta.outputs.version }} --path=./ \
+        flux push artifact oci://${{ env.OCI_TARGET }}:${{ steps.docker_meta.outputs.version }} --path=${{ env.PATH }} \
+
           --source="$(git config --get remote.origin.url)" \
           --revision="$(git tag --points-at HEAD)/$(git rev-parse HEAD)" 2>&1 | tee tmp-digest.out
           # Warning: This is not stable, flux CLI output may change
@@ -49,7 +52,8 @@ jobs:
 
         echo "digest=$(grep '✔ artifact successfully pushed to' tmp-digest.out | awk '{print $6}')" >> $GITHUB_OUTPUT
 
-        flux tag artifact oci://${{ env.PUSH_TARGET }}:${{ steps.docker_meta.outputs.version }} \
+        flux tag artifact oci://${{ env.OCI_TARGET }}:${{ steps.docker_meta.outputs.version }} \
+
           --tag latest
 
     - name: cosign-installer
