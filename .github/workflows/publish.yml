@@ -52,7 +52,6 @@ jobs:
         echo "digest=$(grep '✔ artifact successfully pushed to' tmp-digest.out | awk '{print $6}')" >> $GITHUB_OUTPUT
 
         flux tag artifact oci://${{ env.OCI_TARGET }}:${{ steps.docker_meta.outputs.version }} \
-
           --tag latest
 
     - name: cosign-installer
