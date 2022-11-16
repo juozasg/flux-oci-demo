@@ -1,13 +1,12 @@
-name: Publish to OCI
+name: Flux OCI Artifact
 
 env:
-  PIP_CACHE_DIR: .pip # Configure the PIP cache directory
   PUSH_TARGET: ghcr.io/juozasg/flux-oci-demo # assumed to be on GHCR, ambient credentials are used
-  BUILDDIR: ./.
 
 on:
   push:
-    branches: [ main ] # Configure the branchs which you want to run this workflow
+    branches: [ main ] # Configure the branches which you want to run this workflow
+  workflow_dispatch:
 
 jobs:
   build-push:
@@ -15,7 +14,7 @@ jobs:
       packages: write
       id-token: write # needed for signing the images with GitHub OIDC Token **not production ready**
 
-    name: "Rebuild OCI"
+    name: "Build and Publish OCI Artifact"
     runs-on: ubuntu-latest
 
     steps:
@@ -39,7 +38,7 @@ jobs:
     - name: Flux push
       id: push_oci
       run: |
-        flux push artifact oci://${{ env.PUSH_TARGET }}:${{ steps.docker_meta.outputs.version }} --path=$BUILDDIR \
+        flux push artifact oci://${{ env.PUSH_TARGET }}:${{ steps.docker_meta.outputs.version }} --path=./ \
           --source="$(git config --get remote.origin.url)" \
           --revision="$(git tag --points-at HEAD)/$(git rev-parse HEAD)" 2>&1 | tee tmp-digest.out
           # Warning: This is not stable, flux CLI output may change
@@ -64,6 +63,5 @@ jobs:
     - name: Sign the published OCI image
       env:
         COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
-      # run: cosign sign --key cosign.key ${{ env.REGISTRY }}/${{ github.actor }}/${{ env.IMAGE_NAME }}:${{ github.run_id }}
       run: cosign sign --key cosign.key ${{ steps.push_oci.outputs.digest }}
 
